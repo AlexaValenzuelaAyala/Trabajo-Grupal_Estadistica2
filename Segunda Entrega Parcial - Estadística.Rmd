@@ -1,0 +1,167 @@
+---
+title: "Segunda Entrega - Estadística"
+author: "Marco Palacios Ponciano"
+date: "1/11/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+LINK DEL GITHUB:https://github.com/AlexaValenzuelaAyala/Trabajo-Grupal_Estadistica2
+
+```{r}
+library(rio)
+data=import("Peru LAPOP AmericasBarometer 2019 v1.0_W.dta")
+```
+
+#Variables Dependientes:
+
+PARTICIPACIÓN CIUDADANA EN INSTITUCIONES ESTATALES:
+```{r}
+str(data$np1)
+table(data$np1)
+data$np1 <- as.factor(data$np1)
+table(data$np1)
+levels(data$np1)=c("Sí","No")
+
+table(data$cp8)
+data$junta=car::recode(data$cp8, "4=1;3=2;2=3;1=4;")
+data$junta=as.ordered(data$junta)
+levels(data$junta)=c("Nunca","Una o dos veces al año", "Una o dos veces al mes","Una vez a la semana")
+table (data$junta)
+
+```
+
+PARTICIPACIÓN CIUDADANA EN POLÍTICA (Partidos políticos)
+```{r}
+table(data$cp13)
+data$junta_partido=car::recode(data$cp13, "4=1;3=2;2=3;1=4;")
+data$junta_partido=as.ordered(data$junta_partido)
+levels(data$junta_partido)=c("Nunca","Una o dos veces al año", "Una o dos veces al mes","Una vez a la semana")
+table(data$junta_partido)
+
+str(data$l1)
+table(data$l1)
+data$l1 <- as.factor(data$l1)
+summary(data$l1)
+```
+
+PARTICIPACIÓN CIUDADANA CON CREENCIAS INDIVIDUALES:
+```{r}
+str(data$prot3)
+data$prot3 <- as.factor(data$prot3)
+table(data$prot3)
+levels(data$prot3)=c("Sí ha participado","No ha participado")
+```
+#Segundo bloque de VI:
+VARIABLE INDEPENDIENTE- CORRUPCION:
+```{r}
+str(data$a4)
+```
+
+```{r}
+str(data$exc2)
+data$exc2 <- as.factor(data$exc2)
+table(data$exc2)
+levels(data$exc2)=c("No","Sí")
+library(fastDummies)
+data=dummy_cols(data, select_columns = c("exc2")) 
+names(data)
+#"exc2_No"                "exc2_Sí"
+
+
+str(data$exc6)
+data$exc6 <- as.factor(data$exc6)
+table(data$exc6)
+levels(data$exc6)=c("No","Sí")
+data=dummy_cols(data, select_columns = c("exc6")) 
+names(data)
+#"exc6_No"                "exc6_Sí"
+
+str(data$exc18)
+data$exc18 <- as.factor(data$exc18)
+table(data$exc18)
+levels(data$exc18)=c("No","Sí")
+data=dummy_cols(data, select_columns = c("exc18"))
+names(data)
+#exc18_No"               "exc18_Sí"
+```
+
+#Comentario: Con esta operación se busca representar a la variable "Corrupción" a partir de que se cumplan (1) con "¿Algún agente de policía le pidió una coima (o soborno) en los últimos 12 meses?" (EXC2), "¿En los últimos 12 meses, algún empleado público le ha solicitado una coima (o soborno)?" (EXC6), "¿Cree que como están las cosas a veces se justifica pagar una coima (o soborno)?" (EXC18)
+
+
+VARIABLE INDEPENDIENTE - SERVICIOS PÚBLICOS:
+```{r}
+table(data$sgl1)
+data$servicios=car::recode(data$sgl1, "5=1;4=2;3=3;2=4;1=5")
+data$servicios=as.ordered(data$servicios)
+levels(data$servicios)=c("Muy malos","Malos", "Rgulares","Buenos","Muy buenos")
+table (data$servicios)
+
+```
+#Comentario: Con esta operación se busca representar a la variable "Religión" a partir de que se ordene adecuadamente cuánto es el nivel de satisfacción del inviduo en los servicios públicos ofrecidos por el Estado (data$servicios).
+
+VARIABLE INDEPENDIENTE - SEGURIDAD:
+```{r}
+str(data$vic1ext)
+data$vic1ext <- as.factor(data$vic1ext)
+table(data$vic1ext)
+levels(data$exc2)=c("Sí","No")
+
+str(data$vicbar7)
+data$vicbar7 <- as.factor(data$vicbar7)
+table(data$vicbar7)
+levels(data$vicbar7)=c("Sí","No")
+
+str(data$arm2)
+data$arm2 <- as.factor(data$arm2)
+table(data$arm2)
+levels(data$arm2)=c("Sí","No")
+```
+
+#Comentario: Con esta operación se busca representar a la variable "Seguridad" a partir de que se cumplan (1) con "¿ha sido usted víctima de algún acto de delincuencia en los últimos 12 meses? Es decir, ¿ha sido usted víctima de un robo, hurto, agresión, fraude, chantaje, extorsión, amenazas o algún otro tipo de acto delincuencial en los últimos 12 meses?" (VICBAR7), "Si usted pudiera, ¿tendría un arma de fuego para su protección?" (ARM2)
+
+VARIABLE INDEPENDIENTE - RELIGIÓN:
+```{r}
+str(data$q5a)
+table(data$q5a)
+
+data$religion1=car::recode(data$q5a, "5=1;4=2;3=3;2=4;1=5")
+data$religion1=as.ordered(data$religion1)
+levels(data$religion1)=c("Nunca o casi nunca","Una o dos veces al año", "Una vez al mes","Una vez por semana","Más de una vez por semana")
+table(data$religion1)
+
+data$religion2=car::recode(data$q5b, "4=1;3=2;2=3;1=4")
+data$religion2=as.ordered(data$religion2)
+levels(data$religion2)=c("Nada importante","Poco importante", "Algo importante","Muy importante")
+table(data$religion2)
+```
+#Comentario: Con esta operación se busca representar a la variable "Religión" a partir de que se ordene adecuadamente cuánto es la frecuencia de asistencia a su centro de alabanza (data$religion1) y consideración de su religión en la vida personal del individuo (data$religion2)
+
+VARIABLE INDEPENDIENTE - USO REDES SOCIALES:
+```{r}
+table(data$smedia3)
+data$red_facebook=car::recode(data$smedia3, "5=1;4=2;3=3;2=4;1=5")
+data$red_facebook=as.ordered(data$red_facebook)
+levels(data$red_facebook)=c("Nunca"," Algunas veces al año", "Algunas veces al mes","Algunas veces a la semana","Diariamente")
+table(data$red_facebook)
+
+table(data$smedia6)
+data$red_twiter=car::recode(data$smedia6, "5=1;4=2;3=3;2=4;1=5")
+data$red_twiter=as.ordered(data$red_twiter)
+levels(data$red_twiter)=c("Nunca"," Algunas veces al año", "Algunas veces al mes","Algunas veces a la semana","Diariamente")
+table(data$red_twiter)
+
+table(data$smedia9)
+data$red_wsp=car::recode(data$smedia9, "5=1;4=2;3=3;2=4;1=5")
+data$red_wsp=as.ordered(data$red_wsp)
+levels(data$red_wsp)=c("Nunca"," Algunas veces al año", "Algunas veces al mes","Algunas veces a la semana","Diariamente")
+table(data$red_wsp)
+
+```
+
+#Comentarios: Con esta operación se busca representar a la variable "Corrupción" a partir de que se verifique la cantidad de veces que el individuo reciba algún tipo de información política por las redes sociales de Facebook (data$red_facebook), Twitter (data$red_twiter) y WhatsApp (data$red_wsp).
